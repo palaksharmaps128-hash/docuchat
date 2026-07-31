@@ -3,5 +3,4 @@ flask-cors
 groq
 pytesseract
 pillow
-openai-whisper
 chromadb

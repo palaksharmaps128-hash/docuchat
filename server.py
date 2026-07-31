@@ -3,8 +3,6 @@ from flask_cors import CORS
 from PIL import Image
 import pytesseract
 from groq import Groq
-import whisper
-import tempfile
 import os
 import platform
 
@@ -20,9 +18,6 @@ if platform.system() == "Windows":
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 client = Groq(api_key=GROQ_API_KEY)
-
-# Whisper model ek hi baar load hoga jab server start hoga
-whisper_model = whisper.load_model("base")
 
 
 def extract_text(image):
@@ -87,21 +82,6 @@ def ask_endpoint():
 
     answer = ask_question(question, GROQ_API_KEY)
     return jsonify({"answer": answer})
-
-
-@app.route("/api/transcribe", methods=["POST"])
-def transcribe_endpoint():
-    """Recorded audio ko text mein convert karta hai"""
-    if "audio" not in request.files:
-        return jsonify({"error": "No audio uploaded"}), 400
-
-    file = request.files["audio"]
-
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_file:
-        file.save(tmp_file.name)
-        result = whisper_model.transcribe(tmp_file.name, language="en")
-
-    return jsonify({"text": result["text"].strip()})
 
 
 if __name__ == "__main__":
