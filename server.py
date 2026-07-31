@@ -5,19 +5,19 @@ import pytesseract
 from groq import Groq
 import whisper
 import tempfile
-import io
+import os
+import platform
 
 from rag_utils import store_document, ask_question
-import pyttsx3
 
 app = Flask(__name__)
 CORS(app)  # React (alag port pe chalta hai) se requests allow karne ke liye zaroori hai
 
-import os
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
-# Tesseract path set karo (Windows ke liye zaroori hai)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Tesseract path — sirf Windows pe zaroori hai, Linux (Render) pe apne aap mil jata hai
+if platform.system() == "Windows":
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 client = Groq(api_key=GROQ_API_KEY)
 
@@ -49,6 +49,11 @@ def simplify_text(text):
 
 
 # ---------- API Routes ----------
+
+@app.route("/")
+def home():
+    return jsonify({"status": "DocuChat backend is running"})
+
 
 @app.route("/api/simplify", methods=["POST"])
 def simplify_endpoint():
@@ -99,25 +104,6 @@ def transcribe_endpoint():
     return jsonify({"text": result["text"].strip()})
 
 
-@app.route("/api/speak", methods=["POST"])
-def speak_endpoint():
-    """Diye gaye text ko server pe bolta hai (offline, pyttsx3 use karke)"""
-    data = request.get_json()
-    text = data.get("text", "")
-
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 180)
-    voices = engine.getProperty('voices')
-    for voice in voices:
-        if 'female' in voice.name.lower() or 'zira' in voice.name.lower():
-            engine.setProperty('voice', voice.id)
-            break
-    engine.say(text)
-    engine.runAndWait()
-    engine.stop()
-
-    return jsonify({"status": "done"})
-
-
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, port=port, host='0.0.0.0')
