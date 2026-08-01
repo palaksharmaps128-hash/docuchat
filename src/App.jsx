@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
-const API_BASE = `http://${window.location.hostname}:5000`
+const API_BASE = "https://docuchat-1-ng6q.onrender.com"
 
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
