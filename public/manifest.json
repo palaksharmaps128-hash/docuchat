@@ -1,6 +1,6 @@
 {
-  "name": "DocuChat - AI Document Assistant",
-  "short_name": "DocuChat",
+  "name": "InsightBot - AI Document Assistant",
+  "short_name": "InsightBot",
   "description": "Upload documents, get simplified explanations, and chat about them by text or voice.",
   "start_url": "/",
   "display": "standalone",
