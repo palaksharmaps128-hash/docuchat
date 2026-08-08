@@ -339,7 +339,7 @@ function App() {
           {!simplified && (
             <div className="welcome-hero">
               <div className="welcome-hero-icon">👋</div>
-              <div className="welcome-hero-title">Hi Palak, I'm InsightBot</div>
+              <div className="welcome-hero-title">Hi babyy, I'm InsightBot</div>
               <div className="welcome-hero-sub">
                 Upload a loan agreement, medical report, or any complex document — I'll explain it in plain language and answer your questions.
               </div>
