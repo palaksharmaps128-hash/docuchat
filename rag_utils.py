@@ -45,11 +45,30 @@ def store_document(text, doc_id="current_doc"):
     return collection
 
 
+import re
+
+def try_calculator_tool(question):
+    """Agent tool: agar sawaal ek simple math expression hai, calculator use karo"""
+    match = re.search(r'[\d\.\s\+\-\*/\(\)%]{3,}', question)
+    if match and any(c.isdigit() for c in match.group()) and any(op in match.group() for op in '+-*/'):
+        try:
+            expr = match.group().strip()
+            result = eval(expr, {"__builtins__": {}})
+            return f"🧮 Using the calculator tool: {expr} = {result}"
+        except Exception:
+            return None
+    return None
+
+
 def ask_question(question, groq_api_key):
     """
     User ka sawaal leke, pehle ChromaDB (document) se answer dhoondhta hai.
     Agar document mein answer nahi milta, LLM apne general knowledge se helpful answer deta hai.
     """
+    calc_result = try_calculator_tool(question)
+    if calc_result:
+        return calc_result
+
     collection = chroma_client.get_collection(name="doc_collection")
 
     # Sabse relevant 3 chunks dhoondo

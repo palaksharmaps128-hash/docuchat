@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
-const API_BASE = "https://docuchat-1-ng6q.onrender.com"
+const API_BASE = `http://${window.location.hostname}:5000`
 
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
@@ -274,7 +274,7 @@ function App() {
         <header className="top-header">
           <button className="icon-btn" onClick={() => setShowHistory(true)} title="Chats">☰</button>
           <div className="header-titles">
-            <div className="header-title">huehue</div>
+            <div className="header-title">InsightBot</div>
             <div className="header-sub">AI Document Assistant</div>
           </div>
           <button className="icon-btn" onClick={() => setShowHistory(true)} title="Search chats">🔍</button>
@@ -339,7 +339,7 @@ function App() {
           {!simplified && (
             <div className="welcome-hero">
               <div className="welcome-hero-icon">👋</div>
-              <div className="welcome-hero-title">Hi babyyyy, I'm huehue</div>
+              <div className="welcome-hero-title">Hi Palak, I'm InsightBot</div>
               <div className="welcome-hero-sub">
                 Upload a loan agreement, medical report, or any complex document — I'll explain it in plain language and answer your questions.
               </div>
