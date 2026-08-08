@@ -284,24 +284,36 @@ function App() {
         {/* Quick actions row */}
         <div className="quick-actions-row">
           <button className="qa-card" onClick={handleNewDocument}>
-            <span className="qa-icon qa-icon-1">＋</span>
+            <div className="qa-card-top">
+              <span className="qa-icon qa-icon-1">＋</span>
+              <span className="qa-arrow">›</span>
+            </div>
             <span className="qa-title">New Chat</span>
-            <span className="qa-sub">Start fresh</span>
+            <span className="qa-sub">Start a new conversation</span>
           </button>
           <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
-            <span className="qa-icon qa-icon-2">📄</span>
+            <div className="qa-card-top">
+              <span className="qa-icon qa-icon-2">📄</span>
+              <span className="qa-arrow">›</span>
+            </div>
             <span className="qa-title">Upload</span>
             <span className="qa-sub">Add a document</span>
           </button>
           <button className="qa-card" onClick={handleSimplifyClick}>
-            <span className="qa-icon qa-icon-3">🧠</span>
+            <div className="qa-card-top">
+              <span className="qa-icon qa-icon-3">🧠</span>
+              <span className="qa-arrow">›</span>
+            </div>
             <span className="qa-title">Simplify</span>
-            <span className="qa-sub">Explain document</span>
+            <span className="qa-sub">Explain complex docs</span>
           </button>
           <button className="qa-card" onClick={handleAskClick}>
-            <span className="qa-icon qa-icon-4">💬</span>
-            <span className="qa-title">Ask</span>
-            <span className="qa-sub">Ask a question</span>
+            <div className="qa-card-top">
+              <span className="qa-icon qa-icon-4">✨</span>
+              <span className="qa-arrow">›</span>
+            </div>
+            <span className="qa-title">Summarize</span>
+            <span className="qa-sub">Get key points instantly</span>
           </button>
         </div>
 
@@ -338,35 +350,39 @@ function App() {
         <div className="messages-area">
           {!simplified && (
             <div className="welcome-hero">
-              <div className="welcome-hero-icon">👋</div>
-              <div className="welcome-hero-title">Hi babyy, I'm InsightBot</div>
+              <div className="mascot-wrap">
+                <span className="mascot-sparkle sparkle-left">✨</span>
+                <div className="mascot-circle">🤖</div>
+                <span className="mascot-sparkle sparkle-right">✨</span>
+              </div>
+              <div className="welcome-hero-title">Hello! 👋 I'm <span className="brand-highlight">InsightBot</span></div>
               <div className="welcome-hero-sub">
-                Upload a loan agreement, medical report, or any complex document — I'll explain it in plain language and answer your questions.
+                Upload a document and I'll help you understand it, simplify it, and answer your questions.
               </div>
             </div>
           )}
 
           {!simplified && (
-            <div className="msg-row assistant">
-              <div className="avatar assistant-avatar">🤖</div>
-              <div className="msg-bubble assistant upload-msg-bubble">
-                <div className="upload-box">
-                  <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
-                  <label htmlFor="fileInput" className="upload-label">
-                    <div className="upload-icon">📎</div>
-                    <div className="upload-text">Click to upload document image</div>
-                    <div className="upload-hint">JPG, JPEG or PNG</div>
-                  </label>
-                </div>
+            <div className="upload-standalone">
+              <div className="upload-box">
+                <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
+                <label htmlFor="fileInput" className="upload-label">
+                  <div className="upload-icon">📎</div>
+                  <div className="upload-text">Upload a document</div>
+                  <div className="upload-hint">JPG, JPEG or PNG</div>
+                  <div className="upload-choose-btn">⤒ Choose File</div>
+                  <div className="upload-drag-hint">or drag and drop here</div>
+                </label>
+              </div>
                 {previewUrl && (
                   <div className="preview-section">
                     <img src={previewUrl} alt="Uploaded document" className="preview-image" />
                     <button className="simplify-btn" onClick={handleSimplify} disabled={loading}>
-                      {loading ? 'Simplifying...' : 'Simplify Document'}
+                      {loading ? 'Waking up server (can take up to 60s on first use)...' : 'Simplify Document'}
                     </button>
                   </div>
                 )}
-              </div>
+              <div className="security-note">🔒 Your documents are secure and never shared with anyone.</div>
             </div>
           )}
 
