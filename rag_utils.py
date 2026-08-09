@@ -4,7 +4,7 @@ from groq import Groq
 # ChromaDB client - stores data locally, no server/subscription needed
 chroma_client = chromadb.Client()
 
-def chunk_text(text, chunk_size=300, overlap=50):
+def chunk_text(text, chunk_size=600, overlap=40):
     """
     Simple document ko chhote chunks mein todta hai.
     chunk_size = har chunk mein kitne words honge

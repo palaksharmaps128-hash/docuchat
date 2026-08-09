@@ -5,6 +5,7 @@ import pytesseract
 from groq import Groq
 import os
 import platform
+import threading
 
 from rag_utils import store_document, ask_question
 
@@ -21,7 +22,12 @@ client = Groq(api_key=GROQ_API_KEY)
 
 
 def extract_text(image):
-    """Image se text nikalta hai OCR use karke"""
+    """Image se text nikalta hai OCR use karke — pehle image ko resize karte hain speed ke liye"""
+    max_width = 1200
+    if image.width > max_width:
+        ratio = max_width / image.width
+        new_height = int(image.height * ratio)
+        image = image.resize((max_width, new_height))
     return pytesseract.image_to_string(image)
 
 
@@ -62,8 +68,8 @@ def simplify_endpoint():
     raw_text = extract_text(image)
     simplified = simplify_text(raw_text)
 
-    # Document ko RAG ke liye store karo taaki follow-up questions puchhe ja sakein
-    store_document(raw_text)
+    # RAG embeddings background mein banao — taaki summary turant mil jaye, wait na karna pade
+    threading.Thread(target=store_document, args=(raw_text,)).start()
 
     return jsonify({
         "raw_text": raw_text,

@@ -378,7 +378,7 @@ function App() {
                   <div className="preview-section">
                     <img src={previewUrl} alt="Uploaded document" className="preview-image" />
                     <button className="simplify-btn" onClick={handleSimplify} disabled={loading}>
-                      {loading ? 'Waking up server (can take up to 60s on first use)...' : 'Simplify Document'}
+                      {loading ? 'Reading and simplifying...' : 'Simplify Document'}
                     </button>
                   </div>
                 )}
