@@ -22,13 +22,20 @@ client = Groq(api_key=GROQ_API_KEY)
 
 
 def extract_text(image):
-    """Image se text nikalta hai OCR use karke — pehle image ko resize karte hain speed ke liye"""
-    max_width = 1200
+    """Image se text nikalta hai OCR use karke — resize + grayscale + fast mode taaki weak CPU pe bhi jaldi ho"""
+    max_width = 900
     if image.width > max_width:
         ratio = max_width / image.width
         new_height = int(image.height * ratio)
         image = image.resize((max_width, new_height))
-    return pytesseract.image_to_string(image)
+
+    # Grayscale conversion se Tesseract kaafi fast hota hai (kam data process karta hai)
+    image = image.convert("L")
+
+    # --psm 6: "single uniform block of text" — auto-detect wale mode se fast hai
+    # --oem 1: LSTM-only engine (default se halka fast, accuracy theek rehti hai)
+    custom_config = r'--oem 1 --psm 6'
+    return pytesseract.image_to_string(image, config=custom_config)
 
 
 def simplify_text(text):
