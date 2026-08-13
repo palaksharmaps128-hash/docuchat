@@ -59,6 +59,9 @@ def home():
 @app.route("/api/simplify", methods=["POST"])
 def simplify_endpoint():
     """Document image leke, OCR + simplification karke result deta hai"""
+    import time
+    t0 = time.time()
+
     if "image" not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
@@ -66,10 +69,17 @@ def simplify_endpoint():
     image = Image.open(file.stream)
 
     raw_text = extract_text(image)
+    t1 = time.time()
+    print(f"[TIMING] OCR took {t1 - t0:.2f} seconds", flush=True)
+
     simplified = simplify_text(raw_text)
+    t2 = time.time()
+    print(f"[TIMING] Groq LLM call took {t2 - t1:.2f} seconds", flush=True)
 
     # RAG embeddings background mein banao — taaki summary turant mil jaye, wait na karna pade
     threading.Thread(target=store_document, args=(raw_text,)).start()
+
+    print(f"[TIMING] TOTAL before response: {t2 - t0:.2f} seconds", flush=True)
 
     return jsonify({
         "raw_text": raw_text,
