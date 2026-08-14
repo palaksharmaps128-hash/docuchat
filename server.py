@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
-import pytesseract
 from groq import Groq
 import os
-import platform
 import threading
+import io
+import base64
+import requests
+import time
 
 from rag_utils import store_document, ask_question
 
@@ -13,29 +15,38 @@ app = Flask(__name__)
 CORS(app)  # React (alag port pe chalta hai) se requests allow karne ke liye zaroori hai
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-
-# Tesseract path — sirf Windows pe zaroori hai, Linux (Render) pe apne aap mil jata hai
-if platform.system() == "Windows":
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Free OCR.space API key — "helloworld" demo key kaam karta hai testing ke liye,
+# production ke liye free signup karke apni key ocr.space se lena behtar hai
+OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY", "helloworld")
 
 client = Groq(api_key=GROQ_API_KEY)
 
 
 def extract_text(image):
-    """Image se text nikalta hai OCR use karke — resize + grayscale + fast mode taaki weak CPU pe bhi jaldi ho"""
-    max_width = 900
-    if image.width > max_width:
-        ratio = max_width / image.width
-        new_height = int(image.height * ratio)
-        image = image.resize((max_width, new_height))
+    """
+    Image se text nikalta hai — ab OCR.space ke free cloud API se, taaki
+    processing unke fast servers pe ho, Render ke weak free-tier CPU pe nahi.
+    """
+    buffer = io.BytesIO()
+    image.convert("RGB").save(buffer, format="JPEG")
+    buffer.seek(0)
 
-    # Grayscale conversion se Tesseract kaafi fast hota hai (kam data process karta hai)
-    image = image.convert("L")
+    response = requests.post(
+        "https://api.ocr.space/parse/image",
+        files={"file": ("image.jpg", buffer, "image/jpeg")},
+        data={"apikey": OCR_SPACE_API_KEY, "language": "eng"},
+        timeout=30
+    )
+    result = response.json()
 
-    # --psm 6: "single uniform block of text" — auto-detect wale mode se fast hai
-    # --oem 1: LSTM-only engine (default se halka fast, accuracy theek rehti hai)
-    custom_config = r'--oem 1 --psm 6'
-    return pytesseract.image_to_string(image, config=custom_config)
+    if result.get("IsErroredOnProcessing"):
+        return ""
+
+    parsed_results = result.get("ParsedResults", [])
+    if not parsed_results:
+        return ""
+
+    return parsed_results[0].get("ParsedText", "")
 
 
 def simplify_text(text):
@@ -60,13 +71,12 @@ def simplify_text(text):
 
 @app.route("/")
 def home():
-    return jsonify({"status": "DocuChat backend is running"})
+    return jsonify({"status": "InsightBot backend is running"})
 
 
 @app.route("/api/simplify", methods=["POST"])
 def simplify_endpoint():
     """Document image leke, OCR + simplification karke result deta hai"""
-    import time
     t0 = time.time()
 
     if "image" not in request.files:
