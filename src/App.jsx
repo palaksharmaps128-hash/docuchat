@@ -14,6 +14,36 @@ const RobotIcon = ({ size = 18 }) => (
   </svg>
 )
 
+const PlusChatIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-3.6-.8L4 20l1.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
+    <path d="M12 8.5v6M9 11.5h6" />
+  </svg>
+)
+
+const UploadDocIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" />
+    <path d="M14 2v5h5" />
+    <path d="M12 12v6M9.5 14.5 12 12l2.5 2.5" />
+  </svg>
+)
+
+const BrainIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.6A3 3 0 0 0 6 18a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a2 2 0 0 0-3-2Z" />
+    <path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 1.5 5.6A3 3 0 0 1 18 18a3 3 0 0 1-3 3 3 3 0 0 1-3-3V6a2 2 0 0 1 3-2Z" />
+    <path d="M9 9c1 .5 1 1.5 0 2M15 9c-1 .5-1 1.5 0 2M9 14c1 .3 1 1 0 1.5M15 14c-1 .3-1 1 0 1.5" />
+  </svg>
+)
+
+const SparkleIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+    <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+  </svg>
+)
+
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -296,7 +326,7 @@ function App() {
         <div className="quick-actions-row">
           <button className="qa-card" onClick={handleNewDocument}>
             <div className="qa-card-top">
-              <span className="qa-icon qa-icon-1">＋</span>
+              <span className="qa-icon qa-icon-1"><PlusChatIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">New Chat</span>
@@ -304,7 +334,7 @@ function App() {
           </button>
           <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
             <div className="qa-card-top">
-              <span className="qa-icon qa-icon-2">📄</span>
+              <span className="qa-icon qa-icon-2"><UploadDocIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">Upload</span>
@@ -312,7 +342,7 @@ function App() {
           </button>
           <button className="qa-card" onClick={handleSimplifyClick}>
             <div className="qa-card-top">
-              <span className="qa-icon qa-icon-3">🧠</span>
+              <span className="qa-icon qa-icon-3"><BrainIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">Simplify</span>
@@ -320,7 +350,7 @@ function App() {
           </button>
           <button className="qa-card" onClick={handleAskClick}>
             <div className="qa-card-top">
-              <span className="qa-icon qa-icon-4">✨</span>
+              <span className="qa-icon qa-icon-4"><SparkleIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">Summarize</span>
