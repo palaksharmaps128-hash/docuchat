@@ -1,5 +1,5 @@
 {
-  "name": "InsightBot - AI Document Assistant",
+  "name": "InsightBot - Chatbot",
   "short_name": "InsightBot",
   "description": "Upload documents, get simplified explanations, and chat about them by text or voice.",
   "start_url": "/",
