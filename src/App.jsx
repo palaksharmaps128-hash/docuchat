@@ -3,6 +3,17 @@ import './App.css'
 
 const API_BASE = "https://docuchat-1-ng6q.onrender.com"
 
+const RobotIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="8" width="16" height="12" rx="3" />
+    <circle cx="9" cy="14" r="1.3" fill="white" stroke="none" />
+    <circle cx="15" cy="14" r="1.3" fill="white" stroke="none" />
+    <path d="M12 8 V4" />
+    <circle cx="12" cy="3" r="1.2" fill="white" stroke="none" />
+    <path d="M4 13 H2 M22 13 H20" />
+  </svg>
+)
+
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -351,9 +362,13 @@ function App() {
           {!simplified && (
             <div className="welcome-hero">
               <div className="mascot-wrap">
-                <span className="mascot-sparkle sparkle-left">✨</span>
-                <div className="mascot-circle">🤖</div>
-                <span className="mascot-sparkle sparkle-right">✨</span>
+                <svg className="mascot-sparkle sparkle-left" width="16" height="16" viewBox="0 0 24 24" fill="#c4b5fd">
+                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
+                </svg>
+                <div className="mascot-circle"><RobotIcon size={26} /></div>
+                <svg className="mascot-sparkle sparkle-right" width="16" height="16" viewBox="0 0 24 24" fill="#22d3ee">
+                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
+                </svg>
               </div>
               <div className="welcome-hero-title">Hello! 👋 I'm <span className="brand-highlight">InsightBot</span></div>
               <div className="welcome-hero-sub">
@@ -398,7 +413,7 @@ function App() {
 
           {simplified && (
             <div className="msg-row assistant">
-              <div className="avatar assistant-avatar">🤖</div>
+              <div className="avatar assistant-avatar"><RobotIcon size={16} /></div>
               <div className="msg-bubble assistant">
                 <div className="msg-label">Simplified Version</div>
                 {renderFormattedText(simplified)}
@@ -417,7 +432,7 @@ function App() {
 
           {chatHistory.map((msg, idx) => (
             <div key={idx} className={`msg-row ${msg.role}`}>
-              {msg.role === 'assistant' && <div className="avatar assistant-avatar">🤖</div>}
+              {msg.role === 'assistant' && <div className="avatar assistant-avatar"><RobotIcon size={16} /></div>}
               <div className={`msg-bubble ${msg.role}`}>
                 <div>{renderFormattedText(msg.text)}</div>
                 <div className="msg-actions">
@@ -438,7 +453,7 @@ function App() {
 
           {asking && (
             <div className="msg-row assistant">
-              <div className="avatar assistant-avatar">🤖</div>
+              <div className="avatar assistant-avatar"><RobotIcon size={16} /></div>
               <div className="msg-bubble assistant typing-bubble">
                 <span className="typing-dot"></span><span className="typing-dot"></span><span className="typing-dot"></span>
               </div>
