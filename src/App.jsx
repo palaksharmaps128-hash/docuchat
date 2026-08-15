@@ -16,31 +16,35 @@ const RobotIcon = ({ size = 18 }) => (
 
 const PlusChatIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-3.6-.8L4 20l1.1-4.2A8.5 8.5 0 1 1 21 11.5Z" />
-    <path d="M12 8.5v6M9 11.5h6" />
+    <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-4 4v-4H6a2 2 0 0 1-2-2V6Z" />
+    <path d="M12 7v6M9 10h6" />
   </svg>
 )
 
 const UploadDocIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" />
-    <path d="M14 2v5h5" />
-    <path d="M12 12v6M9.5 14.5 12 12l2.5 2.5" />
+    <rect x="5" y="3" width="14" height="18" rx="2" />
+    <circle cx="9.5" cy="8" r="1.3" fill="white" stroke="none" />
+    <circle cx="14.5" cy="8" r="1.3" fill="white" stroke="none" />
+    <path d="M9 15l3-3 3 3M12 12v6" />
   </svg>
 )
 
 const BrainIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-1.5 5.6A3 3 0 0 0 6 18a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a2 2 0 0 0-3-2Z" />
-    <path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 1.5 5.6A3 3 0 0 1 18 18a3 3 0 0 1-3 3 3 3 0 0 1-3-3V6a2 2 0 0 1 3-2Z" />
-    <path d="M9 9c1 .5 1 1.5 0 2M15 9c-1 .5-1 1.5 0 2M9 14c1 .3 1 1 0 1.5M15 14c-1 .3-1 1 0 1.5" />
+    <rect x="4" y="6" width="16" height="12" rx="4" />
+    <circle cx="9" cy="12" r="1.3" fill="white" stroke="none" />
+    <circle cx="15" cy="12" r="1.3" fill="white" stroke="none" />
+    <path d="M12 6V4M9 18v1.5M15 18v1.5" />
   </svg>
 )
 
 const SparkleIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
-    <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+    <rect x="4" y="7" width="16" height="10" rx="3" />
+    <circle cx="9.5" cy="12" r="1.3" fill="white" stroke="none" />
+    <circle cx="14.5" cy="12" r="1.3" fill="white" stroke="none" />
+    <path d="M12 7V4.5M8 4.5h8" />
   </svg>
 )
 
