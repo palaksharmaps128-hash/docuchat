@@ -322,7 +322,6 @@ function App() {
             <div className="header-title">InsightBot</div>
             <div className="header-sub">Turn Documents Into Insights</div>
           </div>
-          <button className="icon-btn" onClick={() => setShowHistory(true)} title="Search chats">🔍</button>
           <div className="header-avatar">P</div>
         </header>
 
