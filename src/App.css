@@ -39,19 +39,29 @@ body {
   padding: 0.9rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
+  position: relative;
 }
 .icon-btn {
   background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
   color: #e8e9f5; width: 34px; height: 34px; border-radius: 10px;
   font-size: 1rem; cursor: pointer; flex-shrink: 0;
 }
-.header-titles { flex: 1; min-width: 0; text-align: center; }
+.header-titles {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  width: max-content;
+  max-width: 60%;
+}
 .header-title { font-size: 1.05rem; font-weight: 800; color: #ffffff; }
 .header-sub { font-size: 0.72rem; color: #9d9ac2; }
 .header-avatar {
   width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
   background: linear-gradient(135deg, #7c3aed, #4f46e5); color: white;
   display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  margin-left: auto;
 }
 
 /* Quick actions row */
