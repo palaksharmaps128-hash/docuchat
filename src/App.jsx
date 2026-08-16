@@ -557,7 +557,6 @@ function App() {
         {/* Input bar */}
         {simplified && (
           <div className="chat-input-row">
-            <button className="attach-btn" onClick={() => document.getElementById('fileInput')?.click()} title="Attach">📎</button>
             <input
               ref={inputRef}
               type="text"
