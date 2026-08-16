@@ -301,18 +301,23 @@ function App() {
 
   const handleSimplifyClick = () => {
     if (selectedFile && !loading) {
+      // Ek file already choose ki hai lekin abhi simplify nahi hui — usko simplify karo
       handleSimplify()
+    } else if (simplified) {
+      // Document already khula hai — ab yeh button ek DEEPER/detailed explanation mangwata hai
+      sendQuestionToBackend("Can you explain this document in a bit more detail, still in simple language?")
     } else if (!loading) {
-      // No document chosen yet — open the picker so the user can pick one first
+      // Koi document nahi hai abhi — pehla step: file choose karwao
       document.getElementById('fileInput')?.click()
     }
   }
 
   const handleAskClick = () => {
     if (simplified) {
-      focusInput()
+      // Document already khula hai — ab yeh button ek turant ek-line summary mangwata hai
+      sendQuestionToBackend("Give me a short one-line summary of the most important point in this document.")
     } else {
-      // No document simplified yet — guide the user to upload one first
+      // Koi document nahi hai abhi — pehla step: file choose karwao
       document.getElementById('fileInput')?.click()
     }
   }
@@ -392,7 +397,7 @@ function App() {
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">Simplify</span>
-            <span className="qa-sub">Explain complex docs</span>
+            <span className="qa-sub">{simplified ? 'Get a deeper explanation' : 'Explain complex docs'}</span>
           </button>
           <button className="qa-card" onClick={handleAskClick}>
             <div className="qa-card-top">
@@ -400,7 +405,7 @@ function App() {
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">Summarize</span>
-            <span className="qa-sub">Get key points instantly</span>
+            <span className="qa-sub">{simplified ? 'Get a one-line summary' : 'Get key points instantly'}</span>
           </button>
         </div>
 
@@ -581,7 +586,7 @@ function App() {
             <span><ChatTabIcon size={18} /></span>
             Chat
           </button>
-          <button className="tab-btn" onClick={() => setShowHistory(true)}>
+          <button className="tab-btn" onClick={() => document.getElementById('fileInput')?.click()}>
             <span><FolderTabIcon size={18} /></span>
             Files
           </button>
