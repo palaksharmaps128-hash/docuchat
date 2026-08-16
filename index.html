@@ -12,10 +12,18 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Purana service worker jo cached (purani) app dikha raha tha, usko
+      // unregister kar dete hain — taaki browser hamesha fresh/latest
+      // version load kare, aur "do splash screens" wala confusion na ho.
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((registration) => registration.unregister())
         })
+        if (window.caches) {
+          caches.keys().then((names) => {
+            names.forEach((name) => caches.delete(name))
+          })
+        }
       }
     </script>
   </body>
