@@ -48,6 +48,49 @@ const SparkleIcon = ({ size = 18 }) => (
   </svg>
 )
 
+const UploadTrayIcon = ({ size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3v11" />
+    <path d="M8 7l4-4 4 4" />
+    <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+  </svg>
+)
+
+const ChatTabIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 5h16v10H9l-4 4V5Z" />
+    <circle cx="9" cy="10" r="0.9" fill="currentColor" stroke="none" />
+    <circle cx="12" cy="10" r="0.9" fill="currentColor" stroke="none" />
+    <circle cx="15" cy="10" r="0.9" fill="currentColor" stroke="none" />
+  </svg>
+)
+
+const FolderTabIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6Z" />
+  </svg>
+)
+
+const ClockTabIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8" />
+    <path d="M12 8v4l3 2" />
+  </svg>
+)
+
+const UserTabIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="3.5" />
+    <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+  </svg>
+)
+
+const PlusTabIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+)
+
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -415,10 +458,10 @@ function App() {
               <div className="upload-box">
                 <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
                 <label htmlFor="fileInput" className="upload-label">
-                  <div className="upload-icon">📎</div>
+                  <div className="upload-icon"><UploadTrayIcon size={30} /></div>
                   <div className="upload-text">Upload a document</div>
                   <div className="upload-hint">JPG, JPEG or PNG</div>
-                  <div className="upload-choose-btn">⤒ Choose File</div>
+                  <div className="upload-choose-btn"><UploadTrayIcon size={16} /> Choose File</div>
                   <div className="upload-drag-hint">or drag and drop here</div>
                 </label>
               </div>
@@ -534,11 +577,25 @@ function App() {
 
         {/* Bottom tab bar */}
         <nav className="tabbar">
-          <button className="tab-btn active"><span>💬</span>Chat</button>
-          <button className="tab-btn" onClick={() => setShowHistory(true)}><span>📁</span>Files</button>
-          <button className="tab-btn tab-btn-center" onClick={handleNewDocument}>＋</button>
-          <button className="tab-btn" onClick={() => setShowHistory(true)}><span>🕘</span>History</button>
-          <button className="tab-btn"><span>👤</span>Profile</button>
+          <button className="tab-btn active">
+            <span><ChatTabIcon size={18} /></span>
+            Chat
+          </button>
+          <button className="tab-btn" onClick={() => setShowHistory(true)}>
+            <span><FolderTabIcon size={18} /></span>
+            Files
+          </button>
+          <button className="tab-btn tab-btn-center" onClick={handleNewDocument}>
+            <PlusTabIcon size={20} />
+          </button>
+          <button className="tab-btn" onClick={() => setShowHistory(true)}>
+            <span><ClockTabIcon size={18} /></span>
+            History
+          </button>
+          <button className="tab-btn">
+            <span><UserTabIcon size={18} /></span>
+            Profile
+          </button>
         </nav>
       </div>
     </div>
