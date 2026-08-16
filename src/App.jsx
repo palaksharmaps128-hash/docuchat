@@ -91,6 +91,52 @@ const PlusTabIcon = ({ size = 20 }) => (
   </svg>
 )
 
+const NetworkLogo = ({ size = 90 }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <defs>
+      <linearGradient id="netGrad" x1="0" y1="0" x2="100" y2="100">
+        <stop offset="0%" stopColor="#a78bfa" />
+        <stop offset="100%" stopColor="#22d3ee" />
+      </linearGradient>
+    </defs>
+    <line x1="50" y1="50" x2="30" y2="30" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="70" y2="30" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="35" y2="70" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="65" y2="70" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="70" y1="30" x2="80" y2="35" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <circle cx="50" cy="50" r="10" fill="#7c3aed" />
+    <circle cx="30" cy="30" r="6" fill="#c4b5fd" />
+    <circle cx="70" cy="30" r="6" fill="#22d3ee" />
+    <circle cx="80" cy="35" r="4" fill="#4f46e5" />
+    <circle cx="35" cy="70" r="5" fill="#818cf8" />
+    <circle cx="65" cy="70" r="5" fill="#4f46e5" />
+  </svg>
+)
+
+const SplashUploadIcon = ({ size = 22 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" />
+    <path d="M14 2v5h5" />
+    <path d="M9 12h6M9 16h4" />
+  </svg>
+)
+
+const SplashSparkleIcon = ({ size = 22 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+    <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+  </svg>
+)
+
+const SplashChatIcon = ({ size = 22 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 5h16v10H9l-4 4V5Z" />
+    <circle cx="9" cy="10" r="0.9" fill="white" stroke="none" />
+    <circle cx="12" cy="10" r="0.9" fill="white" stroke="none" />
+    <circle cx="15" cy="10" r="0.9" fill="white" stroke="none" />
+  </svg>
+)
+
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -111,6 +157,16 @@ function App() {
   const [activeDocId, setActiveDocId] = useState(null)
   const [docImage, setDocImage] = useState(null)
   const [showHistory, setShowHistory] = useState(false)
+  const [showSplash, setShowSplash] = useState(true)
+  const [splashFading, setSplashFading] = useState(false)
+
+  useEffect(() => {
+    // Splash screen ko ~1.4s dikhao, fir smoothly fade out karo — koi API/network
+    // call nahi hai isme, isliye app ki actual speed pe koi asar nahi padta
+    const fadeTimer = setTimeout(() => setSplashFading(true), 1400)
+    const hideTimer = setTimeout(() => setShowSplash(false), 1750)
+    return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer) }
+  }, [])
 
   useEffect(() => {
     const saved = localStorage.getItem('docuchat_recent')
@@ -361,6 +417,36 @@ function App() {
     <div className="app-shell">
       <div className="glow glow-1"></div>
       <div className="glow glow-2"></div>
+
+      {showSplash && (
+        <div className={`splash-screen ${splashFading ? 'splash-fade-out' : ''}`}>
+          <div className="splash-logo-wrap"><NetworkLogo size={90} /></div>
+          <div className="splash-title">
+            Insight<span className="splash-title-accent">Bot</span>
+          </div>
+          <div className="splash-tagline">
+            Read less. <span className="splash-tagline-accent">Understand more.</span>
+          </div>
+          <div className="splash-divider"></div>
+          <div className="splash-subtitle">
+            Your documents, simplified.<br />Instant insights, smarter decisions.
+          </div>
+          <div className="splash-features">
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-1"><SplashUploadIcon /></div>
+              <span>Upload<br />Any Document</span>
+            </div>
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-2"><SplashSparkleIcon /></div>
+              <span>Get AI<br />Insights</span>
+            </div>
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-3"><SplashChatIcon /></div>
+              <span>Ask &amp;<br />Understand</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="app-frame">
         {/* Top header */}

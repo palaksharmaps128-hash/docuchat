@@ -19,6 +19,85 @@ body {
 .glow-1 { width: 420px; height: 420px; background: #6d28d9; opacity: 0.3; top: -140px; left: -100px; }
 .glow-2 { width: 380px; height: 380px; background: #2563eb; opacity: 0.25; bottom: -140px; right: -80px; }
 
+/* Splash screen */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #0a0b1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+.splash-fade-out { opacity: 0; pointer-events: none; }
+.splash-logo-wrap {
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 24px rgba(124, 58, 237, 0.45));
+  animation: splashPulse 2.4s ease-in-out infinite;
+}
+@keyframes splashPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.splash-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+.splash-title-accent {
+  background: linear-gradient(120deg, #a78bfa, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.splash-tagline {
+  font-size: 1.05rem;
+  color: #c3c1e0;
+  margin-top: 0.2rem;
+}
+.splash-tagline-accent {
+  color: #67e8f9;
+}
+.splash-divider {
+  width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
+  margin: 1rem 0;
+}
+.splash-subtitle {
+  font-size: 0.85rem;
+  color: #8c89b3;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+.splash-features {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6rem;
+}
+.splash-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #c3c1e0;
+  line-height: 1.4;
+}
+.splash-feature-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.splash-feature-icon-1 { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+.splash-feature-icon-2 { background: linear-gradient(135deg, #1e3a8a, #1e293b); }
+.splash-feature-icon-3 { background: linear-gradient(135deg, #0f766e, #164e63); }
+
 .app-frame {
   position: relative; z-index: 1;
   width: 100%;
