@@ -171,9 +171,9 @@ function App() {
     // taaki do splash screens ek ke baad ek na dikhein.
     if (isStandalonePWA) return
 
-    // Normal browser tab mein khula hai — custom splash ~1.4s dikhao, fir fade out
-    const fadeTimer = setTimeout(() => setSplashFading(true), 1400)
-    const hideTimer = setTimeout(() => setShowSplash(false), 1750)
+    // Normal browser tab mein khula hai — custom splash ~2.2s dikhao, fir fade out
+    const fadeTimer = setTimeout(() => setSplashFading(true), 2200)
+    const hideTimer = setTimeout(() => setShowSplash(false), 2600)
     return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer) }
   }, [])
 
