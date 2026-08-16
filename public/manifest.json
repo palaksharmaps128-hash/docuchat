@@ -1,7 +1,7 @@
 {
   "name": "InsightBot",
   "short_name": "InsightBot",
-  "description": "",
+  "description": "AI-powered assistant that simplifies complex documents into clear insights.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0b1a",

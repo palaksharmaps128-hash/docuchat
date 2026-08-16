@@ -157,12 +157,21 @@ function App() {
   const [activeDocId, setActiveDocId] = useState(null)
   const [docImage, setDocImage] = useState(null)
   const [showHistory, setShowHistory] = useState(false)
-  const [showSplash, setShowSplash] = useState(true)
+  const isStandalonePWA =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true
+
+  const [showSplash, setShowSplash] = useState(!isStandalonePWA)
   const [splashFading, setSplashFading] = useState(false)
 
   useEffect(() => {
-    // Splash screen ko ~1.4s dikhao, fir smoothly fade out karo — koi API/network
-    // call nahi hai isme, isliye app ki actual speed pe koi asar nahi padta
+    // Agar app installed/standalone mode mein khula hai (home screen se),
+    // to Android/Chrome apna khud ka native splash pehle hi dikha chuka
+    // hota hai — isliye humara custom splash yahan skip kar dete hain,
+    // taaki do splash screens ek ke baad ek na dikhein.
+    if (isStandalonePWA) return
+
+    // Normal browser tab mein khula hai — custom splash ~1.4s dikhao, fir fade out
     const fadeTimer = setTimeout(() => setSplashFading(true), 1400)
     const hideTimer = setTimeout(() => setShowSplash(false), 1750)
     return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer) }
@@ -542,19 +551,10 @@ function App() {
         {/* Messages */}
         <div className="messages-area">
           {!simplified && (
-            <div className="welcome-hero">
-              <div className="mascot-wrap">
-                <svg className="mascot-sparkle sparkle-left" width="16" height="16" viewBox="0 0 24 24" fill="#c4b5fd">
-                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
-                </svg>
-                <div className="mascot-circle"><RobotIcon size={26} /></div>
-                <svg className="mascot-sparkle sparkle-right" width="16" height="16" viewBox="0 0 24 24" fill="#22d3ee">
-                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
-                </svg>
-              </div>
-              <div className="welcome-hero-title">Hello! 👋 I'm <span className="brand-highlight">InsightBot</span></div>
+            <div className="welcome-hero welcome-hero-slim">
+              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
               <div className="welcome-hero-sub">
-                Read less. Understand more.
+                Upload a document below to begin.
               </div>
             </div>
           )}
