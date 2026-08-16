@@ -320,7 +320,7 @@ function App() {
           <button className="icon-btn" onClick={() => setShowHistory(true)} title="Chats">☰</button>
           <div className="header-titles">
             <div className="header-title">InsightBot</div>
-            <div className="header-sub">AI Document Assistant</div>
+            <div className="header-sub">Turn Documents Into Insights</div>
           </div>
           <button className="icon-btn" onClick={() => setShowHistory(true)} title="Search chats">🔍</button>
           <div className="header-avatar">P</div>
@@ -406,7 +406,7 @@ function App() {
               </div>
               <div className="welcome-hero-title">Hello! 👋 I'm <span className="brand-highlight">InsightBot</span></div>
               <div className="welcome-hero-sub">
-                Upload a document and I'll help you understand it, simplify it, and answer your questions.
+                Read less. Understand more.
               </div>
             </div>
           )}

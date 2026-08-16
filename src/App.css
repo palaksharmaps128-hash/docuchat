@@ -45,7 +45,7 @@ body {
   color: #e8e9f5; width: 34px; height: 34px; border-radius: 10px;
   font-size: 1rem; cursor: pointer; flex-shrink: 0;
 }
-.header-titles { flex: 1; min-width: 0; }
+.header-titles { flex: 1; min-width: 0; text-align: center; }
 .header-title { font-size: 1.05rem; font-weight: 800; color: #ffffff; }
 .header-sub { font-size: 0.72rem; color: #9d9ac2; }
 .header-avatar {
