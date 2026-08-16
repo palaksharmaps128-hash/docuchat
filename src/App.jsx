@@ -113,27 +113,27 @@ const NetworkLogo = ({ size = 90 }) => (
   </svg>
 )
 
-const SplashUploadIcon = ({ size = 22 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+const SplashUploadIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" />
     <path d="M14 2v5h5" />
     <path d="M9 12h6M9 16h4" />
   </svg>
 )
 
-const SplashSparkleIcon = ({ size = 22 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+const SplashSparkleIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
     <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
   </svg>
 )
 
-const SplashChatIcon = ({ size = 22 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+const SplashChatIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 5h16v10H9l-4 4V5Z" />
-    <circle cx="9" cy="10" r="0.9" fill="white" stroke="none" />
-    <circle cx="12" cy="10" r="0.9" fill="white" stroke="none" />
-    <circle cx="15" cy="10" r="0.9" fill="white" stroke="none" />
+    <circle cx="9" cy="10" r="1" fill="white" stroke="none" />
+    <circle cx="12" cy="10" r="1" fill="white" stroke="none" />
+    <circle cx="15" cy="10" r="1" fill="white" stroke="none" />
   </svg>
 )
 
@@ -420,7 +420,12 @@ function App() {
 
       {showSplash && (
         <div className={`splash-screen ${splashFading ? 'splash-fade-out' : ''}`}>
-          <div className="splash-logo-wrap"><NetworkLogo size={90} /></div>
+          <div className="splash-stars">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div className="splash-logo-glow"></div>
+          <div className="splash-logo-wrap"><NetworkLogo size={140} /></div>
           <div className="splash-title">
             Insight<span className="splash-title-accent">Bot</span>
           </div>
@@ -445,6 +450,16 @@ function App() {
               <span>Ask &amp;<br />Understand</span>
             </div>
           </div>
+          <svg className="splash-wave" viewBox="0 0 400 120" preserveAspectRatio="none">
+            <path d="M0 70 Q 60 20, 120 55 T 240 50 T 400 30 V120 H0 Z" fill="url(#waveGrad)" opacity="0.35" />
+            <path d="M0 85 Q 70 40, 140 70 T 260 65 T 400 45" stroke="url(#waveGrad)" strokeWidth="1.2" fill="none" strokeDasharray="1 6" opacity="0.6" />
+            <defs>
+              <linearGradient id="waveGrad" x1="0" y1="0" x2="400" y2="0">
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#22d3ee" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
       )}
 
