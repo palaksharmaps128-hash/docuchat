@@ -1,8 +1,16 @@
 import chromadb
 from groq import Groq
+import threading
 
 # ChromaDB client - stores data locally, no server/subscription needed
 chroma_client = chromadb.Client()
+
+# Lock taaki ek time pe sirf ek hi document store/fetch operation chale.
+# Isse "delete purani collection -> nayi banao -> data add karo" process
+# beech mein doosre thread se interrupt nahi hota (jo pehle race condition
+# ki wajah se "Collection does not exist" error de raha tha).
+doc_lock = threading.Lock()
+
 
 def chunk_text(text, chunk_size=600, overlap=40):
     """
@@ -26,23 +34,28 @@ def store_document(text, doc_id="current_doc"):
     Document ke chunks banake ChromaDB collection mein store karta hai.
     Har naye document ke liye purani collection delete karke nayi banate hain,
     kyunki yeh single-document tool hai (ek time pe ek hi document ka context rakhna hai).
+
+    Lock ke andar poora delete+create+add wrap kiya hai taaki agar do documents
+    ek saath (ya jaldi-jaldi) upload ho jayein, to unke background threads
+    ek-doosre ki collection ko beech mein delete na kar dein.
     """
-    # Purani collection hatao agar hai
-    try:
-        chroma_client.delete_collection(name="doc_collection")
-    except Exception:
-        pass
+    with doc_lock:
+        # Purani collection hatao agar hai
+        try:
+            chroma_client.delete_collection(name="doc_collection")
+        except Exception:
+            pass
 
-    collection = chroma_client.create_collection(name="doc_collection")
+        collection = chroma_client.create_collection(name="doc_collection")
 
-    chunks = chunk_text(text)
-    ids = [f"{doc_id}_{i}" for i in range(len(chunks))]
+        chunks = chunk_text(text)
+        ids = [f"{doc_id}_{i}" for i in range(len(chunks))]
 
-    collection.add(
-        documents=chunks,
-        ids=ids
-    )
-    return collection
+        collection.add(
+            documents=chunks,
+            ids=ids
+        )
+        return collection
 
 
 import re
@@ -69,13 +82,17 @@ def ask_question(question, groq_api_key):
     if calc_result:
         return calc_result
 
-    collection = chroma_client.get_collection(name="doc_collection")
+    # Lock ke andar collection fetch karo — taaki agar koi document abhi
+    # store ho hi raha ho (delete+create+add chal raha ho), to question
+    # us process ke beech mein collection na dhoonde.
+    with doc_lock:
+        collection = chroma_client.get_collection(name="doc_collection")
 
-    # Sabse relevant 3 chunks dhoondo
-    results = collection.query(
-        query_texts=[question],
-        n_results=3
-    )
+        # Sabse relevant 3 chunks dhoondo
+        results = collection.query(
+            query_texts=[question],
+            n_results=3
+        )
 
     relevant_chunks = results["documents"][0]
     context = "\n\n".join(relevant_chunks)
