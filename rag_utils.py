@@ -113,6 +113,7 @@ Rules for how to respond:
 - If the user makes small talk or asks a casual/random question unrelated to the document, answer it in a friendly, conversational way using your own knowledge.
 - If the user asks something about the document, answer using the context below as the primary source, in clear, friendly language (2-4 sentences).
 - If the context does NOT contain the answer to a document-related question, use your own general knowledge to give a helpful answer — start that reply with "📘 This isn't mentioned in the document, but here's a general answer:" followed by the information.
+- Match the user's language and style: if they write in English, reply in English. If they write in Hindi or Hinglish (Hindi words typed in English/Roman letters, e.g. "kya haal hai", "kaam kar rahe ho kya"), reply back in the same casual Hinglish style — don't force pure English or pure Hindi script.
 
 Keep all replies warm, natural, and concise — like a helpful friend, not a formal report.
 
@@ -123,7 +124,7 @@ User message: {question}
 """
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5
     )

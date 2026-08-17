@@ -52,7 +52,7 @@ def extract_text(image):
 def simplify_text(text):
     """Complex text ko simple language mein convert karta hai"""
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         messages=[
             {
                 "role": "system",
