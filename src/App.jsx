@@ -197,7 +197,7 @@ function App() {
     setShowHistory(false)
     setGeneralChat(true)
     setChatHistory([
-      { role: 'assistant', text: "kyaaaaaaaa reeeeeee koi kaam waam ni h kya tujheee?", time: timeNow() }
+      { role: 'assistant', text: "kyaaaaaaaa reeeeeeeeeeee koi kaaam waam ni h kya tujheee?", time: timeNow() }
     ])
   }
 
@@ -402,7 +402,7 @@ function App() {
             <span className="qa-title">New Chat</span>
             <span className="qa-sub">Talk to the chatbot</span>
           </button>
-          <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
+          <button className="qa-card" onClick={handleNewDocument}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-2"><UploadDocIcon size={17} /></span>
               <span className="qa-arrow">›</span>
