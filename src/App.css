@@ -19,135 +19,6 @@ body {
 .glow-1 { width: 420px; height: 420px; background: #6d28d9; opacity: 0.3; top: -140px; left: -100px; }
 .glow-2 { width: 380px; height: 380px; background: #2563eb; opacity: 0.25; bottom: -140px; right: -80px; }
 
-/* Splash screen */
-.splash-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: #0a0b1a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 2rem 1.5rem;
-  text-align: center;
-  opacity: 1;
-  transition: opacity 0.35s ease;
-}
-.splash-fade-out { opacity: 0; pointer-events: none; }
-
-.splash-stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.splash-stars span {
-  position: absolute;
-  width: 3px; height: 3px;
-  background: #c4b5fd;
-  border-radius: 50%;
-  opacity: 0.5;
-  animation: starTwinkle 3s ease-in-out infinite;
-}
-.splash-stars span:nth-child(1) { top: 12%; left: 18%; animation-delay: 0s; }
-.splash-stars span:nth-child(2) { top: 22%; left: 78%; animation-delay: 0.4s; background: #67e8f9; }
-.splash-stars span:nth-child(3) { top: 35%; left: 8%; animation-delay: 0.8s; }
-.splash-stars span:nth-child(4) { top: 48%; left: 88%; animation-delay: 1.2s; width: 2px; height: 2px; }
-.splash-stars span:nth-child(5) { top: 15%; left: 45%; animation-delay: 1.6s; background: #67e8f9; }
-.splash-stars span:nth-child(6) { top: 62%; left: 15%; animation-delay: 2s; width: 2px; height: 2px; }
-.splash-stars span:nth-child(7) { top: 8%; left: 65%; animation-delay: 0.6s; }
-.splash-stars span:nth-child(8) { top: 55%; left: 80%; animation-delay: 1s; background: #67e8f9; width: 2px; height: 2px; }
-.splash-stars span:nth-child(9) { top: 30%; left: 30%; animation-delay: 1.8s; }
-.splash-stars span:nth-child(10) { top: 70%; left: 55%; animation-delay: 2.4s; width: 2px; height: 2px; }
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.9; }
-}
-
-.splash-logo-glow {
-  position: absolute;
-  width: 260px; height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(124, 58, 237, 0) 70%);
-  top: 14%;
-  pointer-events: none;
-}
-
-.splash-logo-wrap {
-  margin-bottom: 0.5rem;
-  filter: drop-shadow(0 0 28px rgba(124, 58, 237, 0.5));
-  animation: splashPulse 2.4s ease-in-out infinite;
-  position: relative;
-}
-@keyframes splashPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-.splash-title {
-  font-size: 2.1rem;
-  font-weight: 800;
-  color: #ffffff;
-  position: relative;
-}
-.splash-title-accent {
-  background: linear-gradient(120deg, #a78bfa, #22d3ee);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.splash-tagline {
-  font-size: 1.05rem;
-  color: #c3c1e0;
-  margin-top: 0.2rem;
-  position: relative;
-}
-.splash-tagline-accent {
-  color: #67e8f9;
-}
-.splash-divider {
-  width: 140px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), transparent);
-  margin: 1rem 0;
-  position: relative;
-}
-.splash-subtitle {
-  font-size: 0.85rem;
-  color: #8c89b3;
-  line-height: 1.6;
-  margin-bottom: 1.8rem;
-  position: relative;
-}
-.splash-features {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.6rem;
-  position: relative;
-}
-.splash-feature {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: #c3c1e0;
-  line-height: 1.4;
-}
-.splash-feature-icon {
-  width: 50px; height: 50px; border-radius: 13px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  image-rendering: crisp-edges;
-}
-.splash-feature-icon-1 { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
-.splash-feature-icon-2 { background: linear-gradient(135deg, #1e3a8a, #1e293b); }
-.splash-feature-icon-3 { background: linear-gradient(135deg, #0f766e, #164e63); }
-
-.splash-wave {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%;
-  height: 140px;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
 .app-frame {
   position: relative; z-index: 1;
   width: 100%;
@@ -230,6 +101,13 @@ body {
 .welcome-hero {
   text-align: center;
   padding: 1.8rem 1.2rem 0.5rem;
+}
+.welcome-hero-slim {
+  padding: 1rem 1.2rem 0.3rem;
+}
+.welcome-hero-title-slim {
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 .mascot-wrap {
   position: relative;
