@@ -197,7 +197,7 @@ function App() {
     setShowHistory(false)
     setGeneralChat(true)
     setChatHistory([
-      { role: 'assistant', text: "kyaaaaaaaa reeeeeeeeeeee koi kaaam waam ni h kya tujheee?", time: timeNow() }
+      { role: 'assistant', text: "MAAA ka BHOSDAAAAA AAAAAGGGGGGGGGGGGGG?", time: timeNow() }
     ])
   }
 
