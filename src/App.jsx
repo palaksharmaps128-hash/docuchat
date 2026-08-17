@@ -197,7 +197,7 @@ function App() {
     setShowHistory(false)
     setGeneralChat(true)
     setChatHistory([
-      { role: 'assistant', text: "Hi! I'm InsightBot. Ask me anything, or upload a document anytime to get it simplified.", time: timeNow() }
+      { role: 'assistant', text: "kyaaaaaaa reeeeeeeeeeeeeee edeeee?", time: timeNow() }
     ])
   }
 
