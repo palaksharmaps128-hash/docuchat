@@ -197,7 +197,7 @@ function App() {
     setShowHistory(false)
     setGeneralChat(true)
     setChatHistory([
-      { role: 'assistant', text: "kyaaaaaaa reeeeeeeeeeeeeee edeeee?", time: timeNow() }
+      { role: 'assistant', text: "kyaaaaaaaa reeeeeee koi kaam waam ni h kya tujheee?", time: timeNow() }
     ])
   }
 
@@ -457,6 +457,11 @@ function App() {
 
         <div className="today-divider"><span>Today</span></div>
 
+        {/* Hamesha DOM mein maujood rehta hai — taaki kisi bhi mode (New Chat/
+            general chat, document chat, welcome screen) mein "Upload" button
+            file picker ko sahi se trigger kar sake */}
+        <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" style={{ display: 'none' }} />
+
         {/* Messages */}
         <div className="messages-area">
           {!simplified && !generalChat && (
@@ -480,7 +485,6 @@ function App() {
           {!simplified && !generalChat && (
             <div className="upload-standalone">
               <div className="upload-box">
-                <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
                 <label htmlFor="fileInput" className="upload-label">
                   <div className="upload-icon"><UploadTrayIcon size={30} /></div>
                   <div className="upload-text">Upload a document</div>
