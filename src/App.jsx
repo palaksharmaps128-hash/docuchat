@@ -111,6 +111,7 @@ function App() {
   const [activeDocId, setActiveDocId] = useState(null)
   const [docImage, setDocImage] = useState(null)
   const [showHistory, setShowHistory] = useState(false)
+  const [generalChat, setGeneralChat] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('docuchat_recent')
@@ -168,6 +169,7 @@ function App() {
       setSimplified(null)
       setChatHistory([])
       setActiveDocId(null)
+      setGeneralChat(false)
     }
   }
 
@@ -180,6 +182,23 @@ function App() {
     setActiveDocId(null)
     setDocImage(null)
     setShowHistory(false)
+    setGeneralChat(false)
+  }
+
+  const handleNewChatClick = () => {
+    // "New Chat" ab document ke bina, seedha chatbot se baat karne ke liye
+    // hai — Upload wala button hi document flow handle karta hai
+    setPreviewUrl(null)
+    setSelectedFile(null)
+    setSimplified(null)
+    setQuestionText('')
+    setActiveDocId(null)
+    setDocImage(null)
+    setShowHistory(false)
+    setGeneralChat(true)
+    setChatHistory([
+      { role: 'assistant', text: "Hi! I'm InsightBot. Ask me anything, or upload a document anytime to get it simplified.", time: timeNow() }
+    ])
   }
 
   const handleSimplify = async () => {
@@ -375,13 +394,13 @@ function App() {
 
         {/* Quick actions row */}
         <div className="quick-actions-row">
-          <button className="qa-card" onClick={handleNewDocument}>
+          <button className="qa-card" onClick={handleNewChatClick}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-1"><PlusChatIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">New Chat</span>
-            <span className="qa-sub">Start a new conversation</span>
+            <span className="qa-sub">Talk to the chatbot</span>
           </button>
           <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
             <div className="qa-card-top">
@@ -440,7 +459,7 @@ function App() {
 
         {/* Messages */}
         <div className="messages-area">
-          {!simplified && (
+          {!simplified && !generalChat && (
             <div className="welcome-hero">
               <div className="mascot-wrap">
                 <svg className="mascot-sparkle sparkle-left" width="16" height="16" viewBox="0 0 24 24" fill="#c4b5fd">
@@ -458,7 +477,7 @@ function App() {
             </div>
           )}
 
-          {!simplified && (
+          {!simplified && !generalChat && (
             <div className="upload-standalone">
               <div className="upload-box">
                 <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
@@ -555,7 +574,7 @@ function App() {
         )}
 
         {/* Input bar */}
-        {simplified && (
+        {(simplified || generalChat) && (
           <div className="chat-input-row">
             <input
               ref={inputRef}

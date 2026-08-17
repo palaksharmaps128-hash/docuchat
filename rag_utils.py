@@ -77,6 +77,8 @@ def ask_question(question, groq_api_key):
     """
     User ka sawaal leke, pehle ChromaDB (document) se answer dhoondhta hai.
     Agar document mein answer nahi milta, LLM apne general knowledge se helpful answer deta hai.
+    Agar abhi tak koi document upload hi nahi hua (naya "New Chat" — general chatbot mode),
+    to seedha general knowledge se hi jawab deta hai, koi error nahi aata.
     """
     calc_result = try_calculator_tool(question)
     if calc_result:
@@ -85,17 +87,21 @@ def ask_question(question, groq_api_key):
     # Lock ke andar collection fetch karo — taaki agar koi document abhi
     # store ho hi raha ho (delete+create+add chal raha ho), to question
     # us process ke beech mein collection na dhoonde.
+    context = ""
     with doc_lock:
-        collection = chroma_client.get_collection(name="doc_collection")
-
-        # Sabse relevant 3 chunks dhoondo
-        results = collection.query(
-            query_texts=[question],
-            n_results=3
-        )
-
-    relevant_chunks = results["documents"][0]
-    context = "\n\n".join(relevant_chunks)
+        try:
+            collection = chroma_client.get_collection(name="doc_collection")
+            # Sabse relevant 3 chunks dhoondo
+            results = collection.query(
+                query_texts=[question],
+                n_results=3
+            )
+            relevant_chunks = results["documents"][0]
+            context = "\n\n".join(relevant_chunks)
+        except Exception:
+            # Koi document upload nahi hua hai abhi tak — general chat mode,
+            # context khali rahega aur LLM apne general knowledge se jawab dega
+            context = ""
 
     client = Groq(api_key=groq_api_key)
 
