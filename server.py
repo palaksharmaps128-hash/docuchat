@@ -23,8 +23,25 @@ def extract_text(image):
     Image se text nikalta hai locally Tesseract OCR se.
     No external API call, no network delay, no timeout risk —
     sab kuch server pe hi hota hai isliye fast hai.
+
+    Speed ke liye teen optimizations:
+    1. Image ko chhote max width tak resize karte hain (Render ke weak
+       free-tier CPU pe bade images Tesseract ko bahut slow kar dete hain)
+    2. Grayscale mein convert karte hain — color info OCR ke liye zaroori
+       nahi, isse processing thodi aur fast hoti hai
+    3. Tesseract ka faster engine mode (--oem 1 --psm 6) use karte hain,
+       jo simple uniform-block text ke liye optimized hai
     """
-    text = pytesseract.image_to_string(image.convert("RGB"))
+    image = image.convert("L")  # grayscale
+
+    max_width = 1000
+    if image.width > max_width:
+        ratio = max_width / image.width
+        new_size = (max_width, int(image.height * ratio))
+        image = image.resize(new_size, Image.LANCZOS)
+
+    custom_config = r'--oem 1 --psm 6'
+    text = pytesseract.image_to_string(image, config=custom_config)
     return text.strip()
 
 
