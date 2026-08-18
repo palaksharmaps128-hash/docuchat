@@ -1,6 +1,7 @@
 import chromadb
 from groq import Groq
 import threading
+import re
 
 # ChromaDB client - stores data locally, no server/subscription needed
 chroma_client = chromadb.Client()
@@ -57,8 +58,6 @@ def store_document(text, doc_id="current_doc"):
         )
         return collection
 
-
-import re
 
 def try_calculator_tool(question):
     """Agent tool: agar sawaal ek simple math expression hai, calculator use karo"""
