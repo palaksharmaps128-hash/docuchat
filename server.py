@@ -2,10 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
 from groq import Groq
-import pytesseract
 import os
 import threading
 import time
+import io
+import requests
 
 from rag_utils import store_document, ask_question
 
@@ -17,32 +18,53 @@ client = Groq(api_key=GROQ_API_KEY)
 
 TEXT_MODEL = "openai/gpt-oss-20b"
 
+# OCR.space free API key — ocr.space/ocrapi/freekey se milti hai, sirf email chahiye,
+# card nahi. "helloworld" (demo/shared key) use nahi kar rahe kyunki woh heavily
+# rate-limited hai aur unreliable — apni personal key normal, better limits deti hai.
+OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY")
 
-def extract_text(image):
+
+def extract_text(image, max_retries=2):
     """
-    Image se text nikalta hai locally Tesseract OCR se.
-    No external API call, no network delay, no timeout risk —
-    sab kuch server pe hi hota hai isliye fast hai.
+    Image se text nikalta hai OCR.space API se, apni personal free key ke saath.
 
-    Speed ke liye teen optimizations:
-    1. Image ko chhote max width tak resize karte hain (Render ke weak
-       free-tier CPU pe bade images Tesseract ko bahut slow kar dete hain)
-    2. Grayscale mein convert karte hain — color info OCR ke liye zaroori
-       nahi, isse processing thodi aur fast hoti hai
-    3. Tesseract ka faster engine mode (--oem 1 --psm 6) use karte hain,
-       jo simple uniform-block text ke liye optimized hai
+    Retry logic add kiya hai: agar pehli try timeout ho jaaye ya fail ho jaaye
+    (network glitch, temporary server issue), toh automatically ek aur try
+    karta hai before giving up — isse reliability improve hoti hai.
     """
-    image = image.convert("L")  # grayscale
+    buffer = io.BytesIO()
+    image.convert("RGB").save(buffer, format="JPEG", quality=85)
+    buffer.seek(0)
 
-    max_width = 1000
-    if image.width > max_width:
-        ratio = max_width / image.width
-        new_size = (max_width, int(image.height * ratio))
-        image = image.resize(new_size, Image.LANCZOS)
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            buffer.seek(0)
+            response = requests.post(
+                "https://api.ocr.space/parse/image",
+                files={"file": ("image.jpg", buffer, "image/jpeg")},
+                data={"apikey": OCR_SPACE_API_KEY, "language": "eng"},
+                timeout=25
+            )
+            result = response.json()
 
-    custom_config = r'--oem 1 --psm 6'
-    text = pytesseract.image_to_string(image, config=custom_config)
-    return text.strip()
+            if result.get("IsErroredOnProcessing"):
+                last_error = result.get("ErrorMessage", "OCR processing error")
+                continue
+
+            parsed_results = result.get("ParsedResults", [])
+            if not parsed_results:
+                last_error = "No parsed results returned"
+                continue
+
+            return parsed_results[0].get("ParsedText", "").strip()
+
+        except requests.exceptions.RequestException as e:
+            last_error = str(e)
+            continue
+
+    print(f"[OCR ERROR] All retries failed: {last_error}", flush=True)
+    return ""
 
 
 def simplify_text(text):
@@ -72,7 +94,7 @@ def home():
 
 @app.route("/api/simplify", methods=["POST"])
 def simplify_endpoint():
-    """Document image leke, Tesseract OCR + Groq simplification karke result deta hai"""
+    """Document image leke, OCR.space + Groq simplification karke result deta hai"""
     t0 = time.time()
 
     if "image" not in request.files:
@@ -81,22 +103,15 @@ def simplify_endpoint():
     file = request.files["image"]
     image = Image.open(file.stream)
 
-    try:
-        raw_text = extract_text(image)
-    except Exception as e:
-        print(f"[OCR ERROR] {e}", flush=True)
-        return jsonify({
-            "raw_text": "",
-            "simplified": "Sorry, I couldn't read this document right now. Please try again in a moment."
-        })
+    raw_text = extract_text(image)
 
     t1 = time.time()
-    print(f"[TIMING] Tesseract OCR took {t1 - t0:.2f} seconds", flush=True)
+    print(f"[TIMING] OCR took {t1 - t0:.2f} seconds", flush=True)
 
     if not raw_text.strip():
         return jsonify({
             "raw_text": "",
-            "simplified": "I couldn't find any readable text in this image. Try a clearer photo of the document."
+            "simplified": "I couldn't read this document right now. Please try again with a clearer photo, or in a moment."
         })
 
     try:
