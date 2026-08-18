@@ -48,6 +48,9 @@ def extract_text(image):
             result = response.json()
 
             if result.get("IsErroredOnProcessing"):
+                # OCR service ne khud error diya (jaise invalid key, quota khatam)
+                # — exact reason print karo taaki Render logs mein dikhe
+                print(f"[OCR ERROR] IsErroredOnProcessing: {result.get('ErrorMessage')}", flush=True)
                 return ""
 
             parsed_results = result.get("ParsedResults", [])
@@ -57,6 +60,7 @@ def extract_text(image):
             return parsed_results[0].get("ParsedText", "")
         except Exception as e:
             last_error = e
+            print(f"[OCR ERROR] Attempt {attempt + 1} failed: {e}", flush=True)
             continue  # ek baar aur try karo
 
     # Dono attempts fail ho gaye — clear error raise karo
