@@ -15,8 +15,10 @@ app = Flask(__name__)
 CORS(app)  # React (alag port pe chalta hai) se requests allow karne ke liye zaroori hai
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-# Free OCR.space API key — "helloworld" demo key kaam karta hai testing ke liye,
-# production ke liye free signup karke apni key ocr.space se lena behtar hai
+# Free OCR.space API key — "helloworld" demo key duniya bhar ke logo ke beech
+# shared hoti hai isliye overload/slow ho sakti hai. Apni khud ki free key
+# https://ocr.space/ocrapi se lekar OCR_SPACE_API_KEY env variable mein
+# Render pe set karna behtar hai (2 minute ka kaam, zyada reliable hoga).
 OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY", "helloworld")
 
 client = Groq(api_key=GROQ_API_KEY)
@@ -24,29 +26,41 @@ client = Groq(api_key=GROQ_API_KEY)
 
 def extract_text(image):
     """
-    Image se text nikalta hai — ab OCR.space ke free cloud API se, taaki
-    processing unke fast servers pe ho, Render ke weak free-tier CPU pe nahi.
+    Image se text nikalta hai — OCR.space ke free cloud API se.
+    Agar pehli try timeout ho jaye (shared demo key overload ki wajah se),
+    ek baar retry karta hai. Agar dono baar fail ho, clear exception raise
+    karta hai taaki caller isse gracefully handle kar sake.
     """
     buffer = io.BytesIO()
     image.convert("RGB").save(buffer, format="JPEG")
     buffer.seek(0)
+    image_bytes = buffer.getvalue()
 
-    response = requests.post(
-        "https://api.ocr.space/parse/image",
-        files={"file": ("image.jpg", buffer, "image/jpeg")},
-        data={"apikey": OCR_SPACE_API_KEY, "language": "eng"},
-        timeout=30
-    )
-    result = response.json()
+    last_error = None
+    for attempt in range(2):
+        try:
+            response = requests.post(
+                "https://api.ocr.space/parse/image",
+                files={"file": ("image.jpg", io.BytesIO(image_bytes), "image/jpeg")},
+                data={"apikey": OCR_SPACE_API_KEY, "language": "eng"},
+                timeout=30
+            )
+            result = response.json()
 
-    if result.get("IsErroredOnProcessing"):
-        return ""
+            if result.get("IsErroredOnProcessing"):
+                return ""
 
-    parsed_results = result.get("ParsedResults", [])
-    if not parsed_results:
-        return ""
+            parsed_results = result.get("ParsedResults", [])
+            if not parsed_results:
+                return ""
 
-    return parsed_results[0].get("ParsedText", "")
+            return parsed_results[0].get("ParsedText", "")
+        except Exception as e:
+            last_error = e
+            continue  # ek baar aur try karo
+
+    # Dono attempts fail ho gaye — clear error raise karo
+    raise RuntimeError(f"OCR service is not responding right now: {last_error}")
 
 
 def simplify_text(text):
@@ -85,9 +99,24 @@ def simplify_endpoint():
     file = request.files["image"]
     image = Image.open(file.stream)
 
-    raw_text = extract_text(image)
+    try:
+        raw_text = extract_text(image)
+    except Exception:
+        # OCR service down/timeout — crash karne ke bajaye friendly JSON
+        # response bhejo, taaki frontend proper message dikha sake
+        return jsonify({
+            "raw_text": "",
+            "simplified": "Sorry, I couldn't read this document right now — the text-recognition service is slow or unavailable. Please try again in a moment."
+        })
+
     t1 = time.time()
     print(f"[TIMING] OCR took {t1 - t0:.2f} seconds", flush=True)
+
+    if not raw_text.strip():
+        return jsonify({
+            "raw_text": "",
+            "simplified": "I couldn't find any readable text in this image. Try a clearer photo of the document."
+        })
 
     simplified = simplify_text(raw_text)
     t2 = time.time()
