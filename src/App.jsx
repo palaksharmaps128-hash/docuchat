@@ -162,7 +162,7 @@ function App() {
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true
 
-  const [showSplash, setShowSplash] = useState(!isStandalonePWA)
+  const [showSplash, setShowSplash] = useState(false)
   const [splashFading, setSplashFading] = useState(false)
 
   useEffect(() => {
@@ -563,12 +563,12 @@ function App() {
 
         {/* Messages */}
         <div className="messages-area">
-          {!simplified && (
+          {!simplified && !generalChat && (
             <div className="welcome-hero welcome-hero-slim">
               <div className="mascot-wrap">
-                <span className="mascot-sparkle sparkle-left">✨</span>
+                <span className="mascot-sparkle sparkle-left">✦</span>
                 <div className="mascot-circle"><RobotIcon size={30} /></div>
-                <span className="mascot-sparkle sparkle-right">✨</span>
+                <span className="mascot-sparkle sparkle-right">✦</span>
               </div>
               <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
               <div className="welcome-hero-sub">
@@ -577,7 +577,7 @@ function App() {
             </div>
           )}
 
-          {!simplified && (
+          {!simplified && !generalChat && (
             <div className="upload-standalone">
               <div className="upload-box">
                 <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
@@ -598,6 +598,20 @@ function App() {
                   </div>
                 )}
               <div className="security-note">🔒 Your documents are secure and never shared with anyone.</div>
+            </div>
+          )}
+
+          {generalChat && chatHistory.length === 0 && (
+            <div className="welcome-hero welcome-hero-slim">
+              <div className="mascot-wrap">
+                <span className="mascot-sparkle sparkle-left">✦</span>
+                <div className="mascot-circle"><RobotIcon size={30} /></div>
+                <span className="mascot-sparkle sparkle-right">✦</span>
+              </div>
+              <div className="welcome-hero-title welcome-hero-title-slim">Let's chat 💬</div>
+              <div className="welcome-hero-sub">
+                Ask me anything, or upload a document anytime.
+              </div>
             </div>
           )}
 

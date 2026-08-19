@@ -102,13 +102,6 @@ body {
   text-align: center;
   padding: 1.8rem 1.2rem 0.5rem;
 }
-.welcome-hero-slim {
-  padding: 1rem 1.2rem 0.3rem;
-}
-.welcome-hero-title-slim {
-  font-size: 1.05rem;
-  font-weight: 700;
-}
 .mascot-wrap {
   position: relative;
   display: inline-flex;
@@ -127,6 +120,8 @@ body {
 .mascot-sparkle {
   position: absolute;
   font-size: 1rem;
+  color: #cbd5e1;
+  text-shadow: 0 0 8px rgba(203, 213, 225, 0.6);
   animation: sparklePulse 2s infinite ease-in-out;
 }
 .sparkle-left { left: -18px; top: 10px; }
