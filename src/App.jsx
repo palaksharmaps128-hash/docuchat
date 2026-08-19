@@ -91,6 +91,52 @@ const PlusTabIcon = ({ size = 20 }) => (
   </svg>
 )
 
+const NetworkLogo = ({ size = 90 }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <defs>
+      <linearGradient id="netGrad" x1="0" y1="0" x2="100" y2="100">
+        <stop offset="0%" stopColor="#a78bfa" />
+        <stop offset="100%" stopColor="#22d3ee" />
+      </linearGradient>
+    </defs>
+    <line x1="50" y1="50" x2="30" y2="30" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="70" y2="30" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="35" y2="70" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="50" y1="50" x2="65" y2="70" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <line x1="70" y1="30" x2="80" y2="35" stroke="url(#netGrad)" strokeWidth="2.5" />
+    <circle cx="50" cy="50" r="10" fill="#7c3aed" />
+    <circle cx="30" cy="30" r="6" fill="#c4b5fd" />
+    <circle cx="70" cy="30" r="6" fill="#22d3ee" />
+    <circle cx="80" cy="35" r="4" fill="#4f46e5" />
+    <circle cx="35" cy="70" r="5" fill="#818cf8" />
+    <circle cx="65" cy="70" r="5" fill="#4f46e5" />
+  </svg>
+)
+
+const SplashUploadIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" />
+    <path d="M14 2v5h5" />
+    <path d="M9 12h6M9 16h4" />
+  </svg>
+)
+
+const SplashSparkleIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+    <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+  </svg>
+)
+
+const SplashChatIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 5h16v10H9l-4 4V5Z" />
+    <circle cx="9" cy="10" r="1" fill="white" stroke="none" />
+    <circle cx="12" cy="10" r="1" fill="white" stroke="none" />
+    <circle cx="15" cy="10" r="1" fill="white" stroke="none" />
+  </svg>
+)
+
 function App() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -112,6 +158,19 @@ function App() {
   const [docImage, setDocImage] = useState(null)
   const [showHistory, setShowHistory] = useState(false)
   const [generalChat, setGeneralChat] = useState(false)
+  const isStandalonePWA =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true
+
+  const [showSplash, setShowSplash] = useState(!isStandalonePWA)
+  const [splashFading, setSplashFading] = useState(false)
+
+  useEffect(() => {
+    if (isStandalonePWA) return
+    const fadeTimer = setTimeout(() => setSplashFading(true), 2200)
+    const hideTimer = setTimeout(() => setShowSplash(false), 2600)
+    return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer) }
+  }, [])
 
   useEffect(() => {
     const saved = localStorage.getItem('docuchat_recent')
@@ -136,19 +195,41 @@ function App() {
 
   const renderFormattedText = (text) => {
     if (!text) return null
-    const startsWithBullet = /^\s*\*/.test(text)
-    const segments = text.split(/(?:^|\s)\*\s+/).map(s => s.trim()).filter(Boolean)
 
-    if (segments.length <= 1) {
+    // LLM kabhi "*" se bullets banata hai, kabhi "-" se — dono formats
+    // ko handle karte hain taaki formatting hamesha sundar list mein
+    // convert ho, chahe LLM ka exact output style kuch bhi ho.
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+    const bulletPattern = /^[*-]\s+(.*)/
+
+    const isBulletLine = (line) => bulletPattern.test(line)
+    const hasBullets = lines.some(isBulletLine)
+
+    if (!hasBullets) {
       return <p className="msg-text">{text}</p>
     }
 
-    const intro = startsWithBullet ? null : segments[0]
-    const items = startsWithBullet ? segments : segments.slice(1)
+    const intro = []
+    const items = []
+    let seenBullet = false
+
+    for (const line of lines) {
+      const match = line.match(bulletPattern)
+      if (match) {
+        seenBullet = true
+        items.push(match[1].trim())
+      } else if (!seenBullet) {
+        intro.push(line)
+      } else {
+        if (items.length > 0) {
+          items[items.length - 1] += ' ' + line
+        }
+      }
+    }
 
     return (
       <>
-        {intro && <p className="msg-intro">{intro}</p>}
+        {intro.length > 0 && <p className="msg-intro">{intro.join(' ')}</p>}
         <ul className="msg-bullet-list">
           {items.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
@@ -177,27 +258,13 @@ function App() {
     setPreviewUrl(null)
     setSelectedFile(null)
     setSimplified(null)
-    setChatHistory([])
-    setQuestionText('')
-    setActiveDocId(null)
-    setDocImage(null)
-    setShowHistory(false)
-    setGeneralChat(false)
-  }
-
-  const handleNewChatClick = () => {
-    // "New Chat" ab document ke bina, seedha chatbot se baat karne ke liye
-    // hai — Upload wala button hi document flow handle karta hai
-    setPreviewUrl(null)
-    setSelectedFile(null)
-    setSimplified(null)
     setQuestionText('')
     setActiveDocId(null)
     setDocImage(null)
     setShowHistory(false)
     setGeneralChat(true)
     setChatHistory([
-      { role: 'assistant', text: "MAAA ka BHOSDAAAAA AAAAAGGGGGGGGGGGGGG?", time: timeNow() }
+      { role: 'assistant', text: "Hey there! 👋 I'm InsightBot. Upload a document and I'll simplify it for you, or just chat with me about anything.", time: timeNow() }
     ])
   }
 
@@ -272,14 +339,12 @@ function App() {
       return
     }
 
-    // If something is already speaking, treat this click as "stop"
     if (window.speechSynthesis.speaking) {
       window.speechSynthesis.cancel()
       setSpeaking(false)
       return
     }
 
-    // Clean up markdown-style bullets/asterisks so they aren't read aloud literally
     const cleanText = text.replace(/\*/g, '').replace(/\s{2,}/g, ' ').trim()
 
     const utterance = new SpeechSynthesisUtterance(cleanText)
@@ -307,6 +372,7 @@ function App() {
     setSelectedFile(null)
     setDocImage(doc.image || null)
     setShowHistory(false)
+    setGeneralChat(false)
   }
 
   const deleteRecentDoc = (e, docId) => {
@@ -320,23 +386,18 @@ function App() {
 
   const handleSimplifyClick = () => {
     if (selectedFile && !loading) {
-      // Ek file already choose ki hai lekin abhi simplify nahi hui — usko simplify karo
       handleSimplify()
     } else if (simplified) {
-      // Document already khula hai — ab yeh button ek DEEPER/detailed explanation mangwata hai
       sendQuestionToBackend("Can you explain this document in a bit more detail, still in simple language?")
     } else if (!loading) {
-      // Koi document nahi hai abhi — pehla step: file choose karwao
       document.getElementById('fileInput')?.click()
     }
   }
 
   const handleAskClick = () => {
     if (simplified) {
-      // Document already khula hai — ab yeh button ek turant ek-line summary mangwata hai
       sendQuestionToBackend("Give me a short one-line summary of the most important point in this document.")
     } else {
-      // Koi document nahi hai abhi — pehla step: file choose karwao
       document.getElementById('fileInput')?.click()
     }
   }
@@ -381,6 +442,51 @@ function App() {
       <div className="glow glow-1"></div>
       <div className="glow glow-2"></div>
 
+      {showSplash && (
+        <div className={`splash-screen ${splashFading ? 'splash-fade-out' : ''}`}>
+          <div className="splash-stars">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div className="splash-logo-glow"></div>
+          <div className="splash-logo-wrap"><NetworkLogo size={140} /></div>
+          <div className="splash-title">
+            Insight<span className="splash-title-accent">Bot</span>
+          </div>
+          <div className="splash-tagline">
+            Read less. <span className="splash-tagline-accent">Understand more.</span>
+          </div>
+          <div className="splash-divider"></div>
+          <div className="splash-subtitle">
+            Your documents, simplified.<br />Instant insights, smarter decisions.
+          </div>
+          <div className="splash-features">
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-1"><SplashUploadIcon /></div>
+              <span>Upload<br />Any Document</span>
+            </div>
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-2"><SplashSparkleIcon /></div>
+              <span>Get AI<br />Insights</span>
+            </div>
+            <div className="splash-feature">
+              <div className="splash-feature-icon splash-feature-icon-3"><SplashChatIcon /></div>
+              <span>Ask &amp;<br />Understand</span>
+            </div>
+          </div>
+          <svg className="splash-wave" viewBox="0 0 400 120" preserveAspectRatio="none">
+            <path d="M0 70 Q 60 20, 120 55 T 240 50 T 400 30 V120 H0 Z" fill="url(#waveGrad)" opacity="0.35" />
+            <path d="M0 85 Q 70 40, 140 70 T 260 65 T 400 45" stroke="url(#waveGrad)" strokeWidth="1.2" fill="none" strokeDasharray="1 6" opacity="0.6" />
+            <defs>
+              <linearGradient id="waveGrad" x1="0" y1="0" x2="400" y2="0">
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#22d3ee" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      )}
+
       <div className="app-frame">
         {/* Top header */}
         <header className="top-header">
@@ -394,15 +500,15 @@ function App() {
 
         {/* Quick actions row */}
         <div className="quick-actions-row">
-          <button className="qa-card" onClick={handleNewChatClick}>
+          <button className="qa-card" onClick={handleNewDocument}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-1"><PlusChatIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
             <span className="qa-title">New Chat</span>
-            <span className="qa-sub">Talk to the chatbot</span>
+            <span className="qa-sub">Start a new conversation</span>
           </button>
-          <button className="qa-card" onClick={handleNewDocument}>
+          <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-2"><UploadDocIcon size={17} /></span>
               <span className="qa-arrow">›</span>
@@ -457,34 +563,21 @@ function App() {
 
         <div className="today-divider"><span>Today</span></div>
 
-        {/* Hamesha DOM mein maujood rehta hai — taaki kisi bhi mode (New Chat/
-            general chat, document chat, welcome screen) mein "Upload" button
-            file picker ko sahi se trigger kar sake */}
-        <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" style={{ display: 'none' }} />
-
         {/* Messages */}
         <div className="messages-area">
-          {!simplified && !generalChat && (
-            <div className="welcome-hero">
-              <div className="mascot-wrap">
-                <svg className="mascot-sparkle sparkle-left" width="16" height="16" viewBox="0 0 24 24" fill="#c4b5fd">
-                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
-                </svg>
-                <div className="mascot-circle"><RobotIcon size={26} /></div>
-                <svg className="mascot-sparkle sparkle-right" width="16" height="16" viewBox="0 0 24 24" fill="#22d3ee">
-                  <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
-                </svg>
-              </div>
-              <div className="welcome-hero-title">Hello! 👋 I'm <span className="brand-highlight">InsightBot</span></div>
+          {!simplified && (
+            <div className="welcome-hero welcome-hero-slim">
+              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
               <div className="welcome-hero-sub">
-                Read less. Understand more.
+                Upload a document below to begin.
               </div>
             </div>
           )}
 
-          {!simplified && !generalChat && (
+          {!simplified && (
             <div className="upload-standalone">
               <div className="upload-box">
+                <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
                 <label htmlFor="fileInput" className="upload-label">
                   <div className="upload-icon"><UploadTrayIcon size={30} /></div>
                   <div className="upload-text">Upload a document</div>
