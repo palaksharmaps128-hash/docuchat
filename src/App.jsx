@@ -251,6 +251,7 @@ function App() {
       setChatHistory([])
       setActiveDocId(null)
       setGeneralChat(false)
+      setGeneralChat(false)
     }
   }
 
@@ -503,10 +504,10 @@ function App() {
               <span className="qa-icon qa-icon-1"><PlusChatIcon size={17} /></span>
               <span className="qa-arrow">›</span>
             </div>
-            <span className="qa-title">New Chat</span>
+            <span className="qa-title">Chat</span>
             <span className="qa-sub">Start a new conversation</span>
           </button>
-          <button className="qa-card" onClick={() => document.getElementById('fileInput')?.click()}>
+          <button className="qa-card" onClick={() => { setGeneralChat(false); document.getElementById('fileInput')?.click() }}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-2"><UploadDocIcon size={17} /></span>
               <span className="qa-arrow">›</span>
@@ -561,6 +562,17 @@ function App() {
 
         <div className="today-divider"><span>Today</span></div>
 
+        {/* Hidden file input — always mounted regardless of current view,
+            so Upload buttons/tabs work reliably from any screen (chat mode,
+            after a document is already loaded, etc.) */}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          id="fileInput"
+          style={{ display: 'none' }}
+        />
+
         {/* Messages */}
         <div className="messages-area">
           {!simplified && !generalChat && (
@@ -570,7 +582,7 @@ function App() {
                 <div className="mascot-circle"><RobotIcon size={30} /></div>
                 <span className="mascot-sparkle sparkle-right">✦</span>
               </div>
-              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
+              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started babyyy</div>
               <div className="welcome-hero-sub">
                 Upload a document below to begin.
               </div>
@@ -580,7 +592,6 @@ function App() {
           {!simplified && !generalChat && (
             <div className="upload-standalone">
               <div className="upload-box">
-                <input type="file" accept="image/*" onChange={handleFileChange} id="fileInput" />
                 <label htmlFor="fileInput" className="upload-label">
                   <div className="upload-icon"><UploadTrayIcon size={30} /></div>
                   <div className="upload-text">Upload a document</div>
@@ -718,7 +729,7 @@ function App() {
             <span><ChatTabIcon size={18} /></span>
             Chat
           </button>
-          <button className="tab-btn" onClick={() => document.getElementById('fileInput')?.click()}>
+          <button className="tab-btn" onClick={() => { setGeneralChat(false); document.getElementById('fileInput')?.click() }}>
             <span><FolderTabIcon size={18} /></span>
             Files
           </button>
