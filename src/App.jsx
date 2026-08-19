@@ -258,14 +258,12 @@ function App() {
     setPreviewUrl(null)
     setSelectedFile(null)
     setSimplified(null)
+    setChatHistory([])
     setQuestionText('')
     setActiveDocId(null)
     setDocImage(null)
     setShowHistory(false)
     setGeneralChat(true)
-    setChatHistory([
-      { role: 'assistant', text: "Hey there! 👋 I'm InsightBot. Upload a document and I'll simplify it for you, or just chat with me about anything.", time: timeNow() }
-    ])
   }
 
   const handleSimplify = async () => {
@@ -567,6 +565,11 @@ function App() {
         <div className="messages-area">
           {!simplified && (
             <div className="welcome-hero welcome-hero-slim">
+              <div className="mascot-wrap">
+                <span className="mascot-sparkle sparkle-left">✨</span>
+                <div className="mascot-circle"><RobotIcon size={30} /></div>
+                <span className="mascot-sparkle sparkle-right">✨</span>
+              </div>
               <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
               <div className="welcome-hero-sub">
                 Upload a document below to begin.
