@@ -582,7 +582,7 @@ function App() {
                 <div className="mascot-circle"><RobotIcon size={30} /></div>
                 <span className="mascot-sparkle sparkle-right">✦</span>
               </div>
-              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started babyyy</div>
+              <div className="welcome-hero-title welcome-hero-title-slim">Let's get started 👋</div>
               <div className="welcome-hero-sub">
                 Upload a document below to begin.
               </div>
