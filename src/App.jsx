@@ -507,7 +507,7 @@ function App() {
             <span className="qa-title">Chat</span>
             <span className="qa-sub">Start a new conversation</span>
           </button>
-          <button className="qa-card" onClick={() => { setGeneralChat(false); document.getElementById('fileInput')?.click() }}>
+          <button className="qa-card" onClick={() => setGeneralChat(false)}>
             <div className="qa-card-top">
               <span className="qa-icon qa-icon-2"><UploadDocIcon size={17} /></span>
               <span className="qa-arrow">›</span>
@@ -584,7 +584,7 @@ function App() {
               </div>
               <div className="welcome-hero-title welcome-hero-title-slim">Let's get started babyy👋</div>
               <div className="welcome-hero-sub">
-                Upload a document below to begin.
+                Upload a file to get started.
               </div>
             </div>
           )}
@@ -592,13 +592,13 @@ function App() {
           {!simplified && !generalChat && (
             <div className="upload-standalone">
               <div className="upload-box">
-                <label htmlFor="fileInput" className="upload-label">
+                <div className="upload-label">
                   <div className="upload-icon"><UploadTrayIcon size={30} /></div>
                   <div className="upload-text">Upload a document</div>
                   <div className="upload-hint">JPG, JPEG or PNG</div>
-                  <div className="upload-choose-btn"><UploadTrayIcon size={16} /> Choose File</div>
+                  <label htmlFor="fileInput" className="upload-choose-btn"><UploadTrayIcon size={16} /> Choose File</label>
                   <div className="upload-drag-hint">or drag and drop here</div>
-                </label>
+                </div>
               </div>
                 {previewUrl && (
                   <div className="preview-section">
@@ -621,7 +621,7 @@ function App() {
               </div>
               <div className="welcome-hero-title welcome-hero-title-slim">Let's chat 💬</div>
               <div className="welcome-hero-sub">
-                Ask me anything, or upload a document anytime.
+                What’s on your mind?.
               </div>
             </div>
           )}
