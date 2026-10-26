@@ -582,7 +582,7 @@ function App() {
 
         {/* Messages */}
         <div className="messages-area">
-          {!simplified && !generalChat && (
+          {!simplified && !generalChat && !previewUrl && (
             <div className="welcome-hero welcome-hero-slim">
               <div className="mascot-wrap">
                 <span className="mascot-sparkle sparkle-left">✦</span>
@@ -598,24 +598,28 @@ function App() {
 
           {!simplified && !generalChat && (
             <div className="upload-standalone">
-              <div className="upload-box">
-                <div className="upload-label">
-                  <div className="upload-icon"><UploadTrayIcon size={30} /></div>
-                  <div className="upload-text">Upload a document</div>
-                  <div className="upload-hint">JPG, JPEG or PNG</div>
-                  <label htmlFor="fileInput" className="upload-choose-btn"><UploadTrayIcon size={16} /> Choose File</label>
-                  <div className="upload-drag-hint">or drag and drop here</div>
-                </div>
-              </div>
-                {previewUrl && (
-                  <div className="preview-section">
-                    <img src={previewUrl} alt="Uploaded document" className="preview-image" />
-                    <button className="simplify-btn" onClick={handleSimplify} disabled={loading}>
-                      {loading ? 'Reading and simplifying...' : 'Simplify Document'}
-                    </button>
+              {!previewUrl && (
+                <div className="upload-box">
+                  <div className="upload-label">
+                    <div className="upload-icon"><UploadTrayIcon size={30} /></div>
+                    <div className="upload-text">Upload a document</div>
+                    <div className="upload-hint">JPG, JPEG or PNG</div>
+                    <label htmlFor="fileInput" className="upload-choose-btn"><UploadTrayIcon size={16} /> Choose File</label>
+                    <div className="upload-drag-hint">or drag and drop here</div>
                   </div>
-                )}
-              <div className="security-note">🔒 Your documents are secure and never shared with anyone.</div>
+                </div>
+              )}
+              {previewUrl && (
+                <div className="preview-section">
+                  <img src={previewUrl} alt="Uploaded document" className="preview-image" />
+                  <button className="simplify-btn" onClick={handleSimplify} disabled={loading}>
+                    {loading ? 'Reading and simplifying...' : 'Simplify Document'}
+                  </button>
+                </div>
+              )}
+              {!previewUrl && (
+                <div className="security-note">🔒 Your documents are secure and never shared with anyone.</div>
+              )}
             </div>
           )}
 
