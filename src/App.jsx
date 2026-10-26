@@ -196,9 +196,9 @@ function App() {
   const renderFormattedText = (text) => {
     if (!text) return null
 
-    // LLM kabhi "*" se bullets banata hai, kabhi "-" se — dono formats
-    // ko handle karte hain taaki formatting hamesha sundar list mein
-    // convert ho, chahe LLM ka exact output style kuch bhi ho.
+    // The LLM sometimes uses "*" for bullets and sometimes "-", so we handle
+    // both formats. This way the text always renders as a clean list,
+    // whatever the LLM's exact output style is.
     const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
     const bulletPattern = /^[*-]\s+(.*)/
 
@@ -349,8 +349,15 @@ function App() {
     const utterance = new SpeechSynthesisUtterance(cleanText)
     utterance.rate = 1
     const voices = window.speechSynthesis.getVoices()
-    const indianVoice = voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang && v.lang.startsWith('en-IN'))
-    if (indianVoice) utterance.voice = indianVoice
+    const isHindi = /[\u0900-\u097F]/.test(cleanText)
+    if (isHindi) {
+      utterance.lang = 'hi-IN'
+      const hindiVoice = voices.find(v => v.lang === 'hi-IN') || voices.find(v => v.lang && v.lang.startsWith('hi'))
+      if (hindiVoice) utterance.voice = hindiVoice
+    } else {
+      const indianVoice = voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang && v.lang.startsWith('en-IN'))
+      if (indianVoice) utterance.voice = indianVoice
+    }
     utterance.onstart = () => setSpeaking(true)
     utterance.onend = () => setSpeaking(false)
     utterance.onerror = () => setSpeaking(false)

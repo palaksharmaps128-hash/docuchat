@@ -11,26 +11,26 @@ import requests
 from rag_utils import store_document, ask_question
 
 app = Flask(__name__)
-CORS(app)  # React (alag port pe chalta hai) se requests allow karne ke liye zaroori hai
+CORS(app)  # Required to allow requests from the React frontend (runs on a different port)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 client = Groq(api_key=GROQ_API_KEY)
 
 TEXT_MODEL = "openai/gpt-oss-20b"
 
-# OCR.space free API key — ocr.space/ocrapi/freekey se milti hai, sirf email chahiye,
-# card nahi. "helloworld" (demo/shared key) use nahi kar rahe kyunki woh heavily
-# rate-limited hai aur unreliable — apni personal key normal, better limits deti hai.
+# OCR.space free API key: get one at ocr.space/ocrapi/freekey (only an email is needed,
+# no card). We avoid the shared demo key "helloworld" because it is heavily
+# rate-limited and unreliable; a personal key gives better limits.
 OCR_SPACE_API_KEY = os.environ.get("OCR_SPACE_API_KEY")
 
 
 def extract_text(image, max_retries=2):
     """
-    Image se text nikalta hai OCR.space API se, apni personal free key ke saath.
+    Extracts text from an image using the OCR.space API with a personal free key.
 
-    Retry logic add kiya hai: agar pehli try timeout ho jaaye ya fail ho jaaye
-    (network glitch, temporary server issue), toh automatically ek aur try
-    karta hai before giving up — isse reliability improve hoti hai.
+    Includes retry logic: if the first attempt times out or fails
+    (network glitch, temporary server issue), it automatically tries again
+    before giving up, which improves reliability.
     """
     buffer = io.BytesIO()
     image.convert("RGB").save(buffer, format="JPEG", quality=85)
@@ -68,7 +68,7 @@ def extract_text(image, max_retries=2):
 
 
 def simplify_text(text):
-    """Extracted text ko simple language mein convert karta hai (sirf text jaata hai, image nahi — kam tokens)"""
+    """Converts extracted text into simple language (only text is sent, not the image, so fewer tokens)."""
     response = client.chat.completions.create(
         model=TEXT_MODEL,
         messages=[
@@ -94,7 +94,7 @@ def home():
 
 @app.route("/api/simplify", methods=["POST"])
 def simplify_endpoint():
-    """Document image leke, OCR.space + Groq simplification karke result deta hai"""
+    """Takes a document image, runs OCR.space + Groq simplification, and returns the result."""
     t0 = time.time()
 
     if "image" not in request.files:
@@ -126,7 +126,7 @@ def simplify_endpoint():
     t2 = time.time()
     print(f"[TIMING] Groq simplify took {t2 - t1:.2f} seconds", flush=True)
 
-    # RAG embeddings background mein banao — taaki summary turant mil jaye, wait na karna pade
+    # Build RAG embeddings in the background so the summary returns immediately
     threading.Thread(target=store_document, args=(raw_text,)).start()
 
     print(f"[TIMING] TOTAL before response: {t2 - t0:.2f} seconds", flush=True)
@@ -139,7 +139,7 @@ def simplify_endpoint():
 
 @app.route("/api/ask", methods=["POST"])
 def ask_endpoint():
-    """Document ke baare mein sawaal ka jawab deta hai"""
+    """Answers a question about the document."""
     data = request.get_json()
     question = data.get("question", "")
 
